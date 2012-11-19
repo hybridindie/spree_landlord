@@ -13,6 +13,5 @@ class AddTennentIdToModels < ActiveRecord::Migration
     tenant.save!
 
     puts("Created #{Rails.application.class.parent_name} as default Tenant")
-
   end
 end
