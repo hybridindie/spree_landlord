@@ -1,5 +1,5 @@
 module Spree
-  Spree::Landlord.model_names.each do |model|
+  Landlord.model_names.each do |model|
     model.class_eval do
 
       attr_protected :tenant_id
