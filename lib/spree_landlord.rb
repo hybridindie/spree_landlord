@@ -1,4 +1,5 @@
 require 'spree_core'
+require 'spree_promo'
 
 module Spree
   module SpreeLandlord

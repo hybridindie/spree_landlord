@@ -42,7 +42,7 @@ module Spree
         Spree::Taxon,
         Spree::TokenizedPermission,
         Spree::Tracker,
-        Spree::User,
+        Spree.user_class,
         Spree::Variant,
         Spree::ZoneMember,
         Spree::Zone ]
