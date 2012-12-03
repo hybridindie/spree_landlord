@@ -12,7 +12,7 @@ module Spree
         obj.tenant_id = Thread.current[:tenant_id]
       end
 
-      before_save do |obj|
+      after_initialize do |obj|
         obj.tenant_id = Thread.current[:tenant_id]
       end
 
