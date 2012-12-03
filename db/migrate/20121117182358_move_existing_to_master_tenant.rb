@@ -1,5 +1,7 @@
 class MoveExistingToMasterTenant < ActiveRecord::Migration
   def change
+    tenant = Spree::Tenant.first
+
     # Assign all existing items to the tenant
     Spree::Landlord.model_names.each do |model|
       model.reset_column_information
