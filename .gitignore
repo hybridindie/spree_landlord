@@ -3,6 +3,7 @@
 .sass-cache
 capybara-*.html
 .rspec
+.rbenv-version
 /.bundle
 /vendor/bundle
 /log/*
@@ -10,7 +11,9 @@ capybara-*.html
 /db/*.sqlite3
 /public/system/*
 /coverage/
+/spec/dummy
 /spec/tmp/*
 **.orig
 rerun.txt
 pickle-email-*.html
+Gemfile.lock

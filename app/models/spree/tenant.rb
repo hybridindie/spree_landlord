@@ -2,6 +2,8 @@ module Spree
   class Tenant < ActiveRecord::Base
     attr_accessible :domain, :shortname
 
+    before_validation :downcase_shortname
+
     ['domain', 'shortname'].each do |attrib|
       validates attrib.to_sym, uniqueness: true, presence: true
     end
@@ -26,6 +28,12 @@ module Spree
 
         Thread.current[:tenant_id] = tenant_id
       end
+    end
+
+    private
+
+    def downcase_shortname
+      self.shortname = self.shortname.downcase if self.shortname.present?
     end
   end
 end
