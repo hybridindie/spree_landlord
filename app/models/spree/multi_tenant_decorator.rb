@@ -6,7 +6,11 @@ module Spree
       belongs_to  :tenant
       validates :tenant_id, presence: true
 
-      default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
+      default_scope lambda {
+        if model.attribute_names.include?('tenant_id')
+          where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] )
+        end
+      }
 
       before_validation(:on => :create) do |obj|
         obj.tenant_id = Thread.current[:tenant_id]
