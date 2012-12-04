@@ -10,10 +10,13 @@ module Spree
       end
 
       def set_current_tenant
-        tenant = nil
-        shortname = request.subdomains.first
-        if shortname.present?
-          tenant = Spree::Tenant.find_by_shortname(shortname.downcase)
+        tenant = Spree::Tenant.find_by_domain(request.domain)
+
+        unless tenant.present?
+          shortname = request.subdomains.first
+          if shortname.present?
+            tenant = Spree::Tenant.find_by_shortname(shortname.downcase)
+          end
         end
 
         if tenant.present?
