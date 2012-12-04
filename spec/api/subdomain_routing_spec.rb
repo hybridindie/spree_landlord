@@ -38,22 +38,27 @@ describe 'subdomain routing' do
   it 'correctly selects the apples tenant' do
     get 'http://apples.example.com'
     response.body.should include(apple.name)
+    response.body.should_not include(orange.name)
   end
 
   it 'correctly selects the oranges tenant' do
     get 'http://oranges.example.com'
     response.body.should include(orange.name)
+    response.body.should_not include(apple.name)
   end
 
   describe 'case insensitivity' do
     it 'selects the correct tenant if the domain contains uppercase' do
       get 'http://Oranges.example.com'
       response.body.should include(orange.name)
+      response.body.should_not include(apple.name)
     end
 
     it 'selects the correct tenant if created with uppercase' do
       get 'http://mixed.example.com'
       response.body.should include(fruit_basket.name)
+      response.body.should_not include(orange.name)
+      response.body.should_not include(apple.name)
     end
   end
 end
