@@ -9,7 +9,6 @@ module Spree
         Spree::Calculator,
         Spree::Configuration,
         Spree::Country,
-        Spree::CreditCard,
         Spree::Gateway,
         Spree::InventoryUnit,
         Spree::LineItem,
