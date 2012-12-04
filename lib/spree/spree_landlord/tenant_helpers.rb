@@ -13,7 +13,7 @@ module Spree
         tenant = nil
         shortname = request.subdomains.first
         if shortname.present?
-          tenant = Spree::Tenant.find_by_shortname(shortname)
+          tenant = Spree::Tenant.find_by_shortname(shortname.downcase)
         end
 
         if tenant.present?

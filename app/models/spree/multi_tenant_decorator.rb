@@ -16,10 +16,14 @@ module Spree
         obj.tenant_id = Thread.current[:tenant_id]
       end
 
-      after_initialize do |obj|
-        obj.tenant_id = Thread.current[:tenant_id]
-      end
+      def tenant
+        tenant_attribute = read_attribute(:tenant_id)
+        unless tenant_attribute.present?
+          write_attribute(:tenant_id, Spree::Tenant.current_tenant_id)
+        end
 
+        super
+      end
     end
   end
 end
