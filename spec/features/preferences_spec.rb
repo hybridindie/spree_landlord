@@ -11,36 +11,42 @@ describe 'preferences' do
     visit 'http://alpha.example.com/admin'
     click_link "Configuration"
     click_link "General Settings"
+    click_link "Edit"
 
     find("#site_name").value.should == "Spree Demo Site"
 
     fill_in "site_name", :with => "Spree Demo Alpha"
     click_button "Update"
 
-    assert_successful_update_message(:general_settings)
+    page.should have_content('Spree Demo Alpha')
+    click_link "Edit"
     find("#site_name").value.should == "Spree Demo Alpha"
 
     visit 'http://beta.example.com/admin'
     click_link "Configuration"
     click_link "General Settings"
+    click_link "Edit"
 
     find("#site_name").value.should == "Spree Demo Site"
 
     fill_in "site_name", :with => "Spree Demo Beta"
     click_button "Update"
 
-    assert_successful_update_message(:general_settings)
+    page.should have_content('Spree Demo Beta')
+    click_link "Edit"
     find("#site_name").value.should == "Spree Demo Beta"
 
     visit 'http://alpha.example.com/admin'
     click_link "Configuration"
     click_link "General Settings"
+    click_link "Edit"
 
     find("#site_name").value.should == "Spree Demo Alpha"
 
     visit 'http://beta.example.com/admin'
     click_link "Configuration"
     click_link "General Settings"
+    click_link "Edit"
 
     find("#site_name").value.should == "Spree Demo Beta"
   end
