@@ -24,6 +24,11 @@ module Spree
 
         super
       end
+
+      def preference_cache_key(name)
+        return unless id
+        [tenant_id, self.class.name, name, id].join('::').underscore
+      end
     end
   end
 end
