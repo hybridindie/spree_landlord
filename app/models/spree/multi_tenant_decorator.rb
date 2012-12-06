@@ -5,7 +5,7 @@ module Spree
       attr_protected :tenant_id
       belongs_to  :tenant
 
-      if model.column_names.include?('tenant_id')
+      if model.table_exists? && model.column_names.include?('tenant_id')
         validates :tenant_id, presence: true
       end
 
