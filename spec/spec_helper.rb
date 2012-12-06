@@ -50,6 +50,6 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.before(:each) do
-    reset_spree_preferences
+    Thread.current[:tenant_id] = nil
   end
 end
