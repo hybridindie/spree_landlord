@@ -27,5 +27,12 @@ Spree::Landlord.model_names.each do |model_name|
         item.tenant.should == Spree::Tenant.master
       end
     end
+
+    describe 'default scope' do
+      it 'delegates to Spree::Tenant.current_tenant_id' do
+        Spree::Tenant.stub(:current_tenant_id).and_return(2112)
+        model_name.scoped.to_sql.should =~ /tenant_id = 2112/
+      end
+    end
   end
 end

@@ -8,7 +8,7 @@ module Spree
 
       default_scope lambda {
         if model.attribute_names.include?('tenant_id')
-          where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] )
+          where( "#{table_name}.tenant_id = ?", Spree::Tenant.current_tenant_id )
         end
       }
 
