@@ -12,8 +12,8 @@ module Spree
       def set_current_tenant
         tenant = Spree::Tenant.find_by_domain(request.domain)
 
+        shortname = request.subdomains.first
         unless tenant.present?
-          shortname = request.subdomains.first
           if shortname.present?
             tenant = Spree::Tenant.find_by_shortname(shortname.downcase)
           end
@@ -21,6 +21,8 @@ module Spree
 
         if tenant.present?
           Spree::Tenant.set_current_tenant(tenant)
+        elsif shortname.nil?
+          Spree::Tenant.set_current_tenant(Spree::Tenant.master)
         else
           raise TenantNotFound, "No tenant could be found with shortname #{shortname.inspect}"
         end
