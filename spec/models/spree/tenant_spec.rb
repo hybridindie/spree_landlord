@@ -11,6 +11,10 @@ describe Spree::Tenant do
   end
 
   describe '.master' do
+    before do
+      Spree::Tenant.destroy_all
+    end
+
     context 'when there are no tenants' do
       it 'creates a tenant to be the master' do
         expect {
