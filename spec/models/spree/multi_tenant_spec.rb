@@ -3,28 +3,32 @@ require 'spec_helper'
 Spree::Landlord.model_names.each do |model_name|
 
   describe model_name do
-    it "#{model_name} should respond to tenant" do
-      model = model_name.new
-      model.should respond_to(:tenant)
-    end
-
-    context 'when a tenant is set' do
-      let(:tenant) { FactoryGirl.create(:tenant) }
-
-      before do
-        Spree::Tenant.set_current_tenant(tenant)
+    describe '#tenant' do
+      it "is defined" do
+        model = model_name.new
+        model.should respond_to(:tenant)
       end
 
-      it "a new #{model_name} should have the tenant" do
-        item = model_name.new
-        item.tenant.should == tenant
-      end
-    end
+      context 'with new instances' do
+        context 'when the current tenant is explicitly set' do
+          let(:tenant) { FactoryGirl.create(:tenant) }
 
-    context 'when a tenant is not set' do
-      it "a new #{model_name} should have the tenant" do
-        item = model_name.new
-        item.tenant.should == Spree::Tenant.master
+          before do
+            Spree::Tenant.set_current_tenant(tenant)
+          end
+
+          it "returns the explicitly set current tenant" do
+            item = model_name.new
+            item.tenant.should == tenant
+          end
+        end
+
+        context 'when the current tenant is implicitly set' do
+          it "returns the master tenant" do
+            item = model_name.new
+            item.tenant.should == Spree::Tenant.master
+          end
+        end
       end
     end
 
