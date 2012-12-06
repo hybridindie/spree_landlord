@@ -13,7 +13,7 @@ module Spree
       }
 
       before_validation(:on => :create) do |obj|
-        obj.tenant_id = Thread.current[:tenant_id]
+        obj.tenant_id ||= Spree::Tenant.current_tenant_id
       end
 
       def tenant

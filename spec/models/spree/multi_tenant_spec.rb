@@ -32,6 +32,33 @@ Spree::Landlord.model_names.each do |model_name|
       end
     end
 
+    describe '#tenant_id' do
+      describe 'during validation' do
+        def trigger_validation_on(item)
+          begin
+            item.valid?
+          rescue Exception
+            # some validations are throwing exceptions, just ignore them
+          end
+        end
+
+        it 'defaults to Spree::Tenent.current_tenant_id' do
+          Spree::Tenant.stub(:current_tenant_id).and_return(1212)
+          item = model_name.new
+          trigger_validation_on(item)
+          item.tenant_id.should == 1212
+        end
+
+        it 'does not overwrite existing value' do
+          Spree::Tenant.stub(:current_tenant_id).and_return(1212)
+          item = model_name.new
+          item.tenant_id = 82
+          trigger_validation_on(item)
+          item.tenant_id.should == 82
+        end
+      end
+    end
+
     describe 'default scope' do
       it 'delegates to Spree::Tenant.current_tenant_id' do
         Spree::Tenant.stub(:current_tenant_id).and_return(2112)
