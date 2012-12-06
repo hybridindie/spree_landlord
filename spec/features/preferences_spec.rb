@@ -9,6 +9,8 @@ describe 'preferences' do
 
   it 'preferences that are set through the admin ui respect tenancy' do
     visit 'http://alpha.example.com/admin'
+    Rails.cache.clear
+
     click_link "Configuration"
     click_link "General Settings"
 
