@@ -22,11 +22,9 @@ Spree::Landlord.model_names.each do |model_name|
     end
 
     context 'when a tenant is not set' do
-      let!(:master_tenant) { FactoryGirl.create(:tenant) }
-
       it "a new #{model_name} should have the tenant" do
         item = model_name.new
-        item.tenant.should == master_tenant
+        item.tenant.should == Spree::Tenant.master
       end
     end
   end

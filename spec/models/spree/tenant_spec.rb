@@ -10,6 +10,27 @@ describe Spree::Tenant do
     end
   end
 
+  describe '.master' do
+    context 'when there are no tenants' do
+      it 'creates a tenant to be the master' do
+        expect {
+          Spree::Tenant.master
+        }.to change { Spree::Tenant.count }.from(0).to(1)
+
+        Spree::Tenant.master.should_not be_nil
+      end
+    end
+
+    context 'when there are tenants' do
+      it 'treats the first tenant as the master' do
+        first_tenant = FactoryGirl.create(:tenant)
+        second_tenant = FactoryGirl.create(:tenant)
+
+        Spree::Tenant.master.should == first_tenant
+      end
+    end
+  end
+
   describe '.current_tenant' do
     it 'delegates to current_tenant_id' do
       id = 18
@@ -31,16 +52,11 @@ describe Spree::Tenant do
     end
 
     context 'when current thread has no tenant id' do
-      it 'returns the first tenant id' do
-        first_tenant = FactoryGirl.create(:tenant)
-        second_tenant = FactoryGirl.create(:tenant)
-        Spree::Tenant.current_tenant_id.should == first_tenant.id
-      end
+      it 'returns the master tenant id' do
+        tenant = FactoryGirl.create(:tenant)
+        Spree::Tenant.should_receive(:master).and_return(tenant)
 
-      it 'raises an exception if there are no tenants' do
-        expect {
-          Spree::Tenant.current_tenant_id
-        }.to raise_error(Spree::SpreeLandlord::MasterTenantMissing, 'At least one tenant is required at all times')
+        Spree::Tenant.current_tenant_id.should == tenant.id
       end
     end
   end

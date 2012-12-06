@@ -1,8 +1,4 @@
 module Spree
-  module SpreeLandlord
-    class MasterTenantMissing < StandardError; end
-  end
-
   class Tenant < ActiveRecord::Base
     attr_accessible :domain, :shortname
 
@@ -13,16 +9,20 @@ module Spree
     end
 
     class << self
+      def master
+        result = Spree::Tenant.first
+        unless result.present?
+          result = Spree::Tenant.create!(:shortname => 'master', :domain => 'example.com')
+        end
+        result
+      end
+
       def current_tenant
         find(current_tenant_id)
       end
 
       def current_tenant_id
-        result = Thread.current[:tenant_id] || Spree::Tenant.first.try(:id)
-        if result.nil?
-          raise SpreeLandlord::MasterTenantMissing, 'At least one tenant is required at all times'
-        end
-        result
+        Thread.current[:tenant_id] || master.id
       end
 
       def set_current_tenant( tenant )
