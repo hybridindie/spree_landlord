@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe 'subdomain routing' do
+  before(:each) do
+    Spree::Tenant.destroy_all
+  end
+
   let!(:apples_tenant) { FactoryGirl.create(:tenant, :shortname => 'apples') }
   let!(:oranges_tenant) { FactoryGirl.create(:tenant, :shortname => 'oranges') }
   let!(:mixed_tenant) { FactoryGirl.create(:tenant, :shortname => 'Mixed') }
@@ -33,6 +37,12 @@ describe 'subdomain routing' do
     expect {
       get 'http://blueberries.sample.com/'
     }.to raise_error(Spree::SpreeLandlord::TenantNotFound, 'No tenant could be found with shortname "blueberries"')
+  end
+
+  it 'correctly selects the master tenant (apples) when sub-domain is missing' do
+    get 'http://sample.com'
+    response.body.should include(apple.name)
+    response.body.should_not include(orange.name)
   end
 
   it 'correctly selects the apples tenant' do
