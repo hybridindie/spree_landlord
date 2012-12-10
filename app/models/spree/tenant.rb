@@ -22,7 +22,9 @@ module Spree
       end
 
       def current_tenant_id
-        Thread.current[:tenant_id] || master.id
+        if Spree::Tenant.table_exists?
+          Thread.current[:tenant_id] || master.id
+        end
       end
 
       def set_current_tenant( tenant )

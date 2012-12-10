@@ -14,7 +14,13 @@ describe 'bootstrap' do
     end
 
     context 'with a database' do
-      it 'runs without errors'
+      it 'runs without errors' do
+        commands = "y
+        y
+        "
+        output, status = Open3.capture2e('cd spec/dummy && bundle && bundle exec rake db:drop && bundle exec rake db:migrate && bundle exec rake db:bootstrap', :stdin_data => commands)
+        status.should be_success
+      end
     end
   end
 end

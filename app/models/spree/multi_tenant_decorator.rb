@@ -10,7 +10,7 @@ module Spree
       end
 
       default_scope lambda {
-        if column_names.include?('tenant_id')
+        if Spree::Tenant.table_exists? && column_names.include?('tenant_id')
           where( "#{table_name}.tenant_id = ?", Spree::Tenant.current_tenant_id )
         end
       }
