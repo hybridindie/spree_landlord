@@ -10,13 +10,13 @@ module Spree
       end
 
       default_scope lambda {
-        if model.column_names.include?('tenant_id')
+        if Spree::Tenant.table_exists? && column_names.include?('tenant_id')
           where( "#{table_name}.tenant_id = ?", Spree::Tenant.current_tenant_id )
         end
       }
 
       before_validation(:on => :create) do |obj|
-        if model.column_names.include?('tenant_id')
+        if obj.class.column_names.include?('tenant_id')
           obj.tenant_id ||= Spree::Tenant.current_tenant_id
         end
       end
@@ -32,7 +32,7 @@ module Spree
 
       def preference_cache_key(name)
         return unless id
-        if model.column_names.include?('tenant_id')
+        if self.class.column_names.include?('tenant_id')
           [tenant_id, self.class.name, name, id].join('::').underscore
         else
           [self.class.name, name, id].join('::').underscore
