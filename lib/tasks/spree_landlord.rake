@@ -26,3 +26,9 @@ namespace :spree_landlord do
     end
   end
 end
+
+namespace :db do
+  task :load_file do
+    Spree::SpreeLandlord::TenantMigrator.new.move_unassigned_to_master
+  end
+end
