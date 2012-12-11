@@ -1,8 +1,9 @@
 module Spree
   class Tenant < ActiveRecord::Base
-    attr_accessible :domain, :shortname
+    attr_accessible :domain, :shortname, :name
 
     before_validation :downcase_shortname
+    before_validation :ensure_name_is_present
 
     ['domain', 'shortname'].each do |attrib|
       validates attrib.to_sym, uniqueness: true, presence: true
@@ -12,7 +13,7 @@ module Spree
       def master
         result = Spree::Tenant.first
         unless result.present?
-          result = Spree::Tenant.create!(:shortname => 'master', :domain => 'example.com')
+          result = Spree::Tenant.create!(:shortname => 'master', :domain => 'example.com', :name => 'Master')
         end
         result
       end
@@ -48,6 +49,12 @@ module Spree
 
     def downcase_shortname
       self.shortname = self.shortname.downcase if self.shortname.present?
+    end
+
+    def ensure_name_is_present
+      if attribute_names.include?('name')
+        self.name ||= self.shortname
+      end
     end
   end
 end
