@@ -1,12 +1,41 @@
 require 'spec_helper'
 
 describe Spree::Tenant do
+  def assert_requires_attribute(attribute_name)
+    tenant = Spree::Tenant.new
+    tenant.valid?
+    tenant.errors.should include(attribute_name)
+
+    tenant.send("#{attribute_name}=", attribute_name)
+    tenant.valid?
+    tenant.errors.should_not include(attribute_name)
+  end
+
   describe '#shortname' do
     it 'converts to lower case on validation' do
       tenant = Spree::Tenant.new
       tenant.shortname = 'SHORTNAME'
       tenant.valid?
       tenant.shortname.should == 'shortname'
+    end
+
+    it 'is required' do
+      assert_requires_attribute(:shortname)
+    end
+  end
+
+  describe '#name' do
+    it 'defaults to same value as shortname if missing' do
+      tenant = Spree::Tenant.new
+      tenant.shortname = 'testname'
+      tenant.valid?
+      tenant.name.should == 'testname'
+    end
+  end
+
+  describe '#domain' do
+    it 'is required' do
+      assert_requires_attribute(:domain)
     end
   end
 
