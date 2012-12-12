@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
 
   s.author    = ['John Dilts', 'M. Scott Ford']
-  s.email     = ['iam@hybridindie.com', 'scotts@email.here']
+  s.email     = ['iam@hybridindie.com', 'scott@mscottford.com']
 
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- {spec}/*`.split("\n")
