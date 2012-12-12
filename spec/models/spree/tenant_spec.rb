@@ -130,4 +130,5 @@ describe Spree::Tenant do
       end
     end
   end
+
 end
