@@ -14,6 +14,8 @@ module Spree
       path = "app/tenants/#{tenant.shortname}/views"
       prepend_view_path(path)
 
+      yield
+
     end
 
   end
