@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'subdomain routing' do
+  let!(:master_tenant) { Spree::Tenant.master }
   let!(:apples_tenant) { FactoryGirl.create(:tenant, :shortname => 'apples') }
   let!(:oranges_tenant) { FactoryGirl.create(:tenant, :shortname => 'oranges') }
   let!(:mixed_tenant) { FactoryGirl.create(:tenant, :shortname => 'Mixed') }
@@ -36,7 +37,7 @@ describe 'subdomain routing' do
   end
 
   it 'correctly selects the master tenant when sub-domain is missing' do
-    get 'http://example.com'
+    get "http://#{master_tenant.domain}"
     response.body.should_not include(apple.name)
     response.body.should_not include(orange.name)
   end
