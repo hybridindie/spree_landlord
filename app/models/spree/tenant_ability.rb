@@ -3,7 +3,7 @@ module Spree
     include CanCan::Ability
 
     def initialize(user)
-      if user.has_spree_role?( :admin )
+      if user.has_spree_role?( :spree_admin )
         can :manage, Spree::Tenant
       end
     end

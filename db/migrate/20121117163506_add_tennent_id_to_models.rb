@@ -14,6 +14,9 @@ class AddTennentIdToModels < ActiveRecord::Migration
     tenant.shortname = "#{Rails.application.class.parent_name}"
     tenant.save!
 
+    # Create the Tenant admin
+    Spree::Role.create!(name: 'spree_admin')
+
     puts("Created #{Rails.application.class.parent_name} as default Tenant")
   end
 end

@@ -9,6 +9,12 @@ Spree::Landlord.model_names.each do |model_name|
         model.should respond_to(:tenant)
       end
 
+
+      it "matches the current tenant" do
+        item = model_name.new
+        item.tenant.id.should  eq(Thread.current[:tenant_id])
+      end
+
       context 'with new instances' do
         context 'when the current tenant is explicitly set' do
           let(:tenant) { FactoryGirl.create(:tenant) }
