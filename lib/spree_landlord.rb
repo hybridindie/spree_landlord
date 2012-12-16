@@ -8,3 +8,4 @@ end
 
 require "spree/spree_landlord/landlord"
 require 'spree/spree_landlord/engine'
+require 'spree/spree_landlord/support/skippable_method'
