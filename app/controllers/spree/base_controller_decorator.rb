@@ -6,13 +6,20 @@ module Spree
     private
 
     def tenant_scope
-      #tenant = Tenant.current_tenant
-      #
-      #raise 'DomainUnknown' unless tenant
+      tenant = Tenant.current_tenant
+
+      raise 'DomainUnknown' unless tenant
 
       # Add tenant views path
-      path = "app/tenants/#{Tenant.current_tenant.shortname}/views"
+      path = "app/tenants/#{tenant.shortname}/views"
       prepend_view_path(path)
+
+      asset_paths = ["app/tenants/#{tenant.shortname}/assets/images",
+                     "app/tenants/#{tenant.shortname}/assets/stylesheets",
+                     "app/tenants/#{tenant.shortname}/assets/javascript"]
+      asset_paths.each do |path|
+        Rails.application.class.assets.prepend_path(path)
+      end
 
     end
 
