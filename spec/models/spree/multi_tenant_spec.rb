@@ -11,9 +11,9 @@ Spree::Landlord.model_names.each do |model_name|
 
       # TODO: Need to create an easy way to test each models new record tenant for defaults and via assignments
       it "matches the current tenant" do
-        pending "test default values for models with current tenant"
-      #  item = model_name.new
-      #  item.tenant.id.should eq(Thread.current[:tenant_id])
+        Spree::Tenant.stub(:current_tenant_id).and_return(123)
+        item = model_name.new
+        item.tenant_id.should eq(Thread.current[:tenant_id])
       end
 
       context 'with new instances' do
