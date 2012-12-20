@@ -18,6 +18,8 @@ module Spree
           domain_tenant
         elsif subdomain_tenant.present?
           subdomain_tenant
+        elsif request.domain == 'localhost' || request.domain.nil?
+          Spree::Tenant.master
         else
           full_domain = request.domain
           if shortname.present?
