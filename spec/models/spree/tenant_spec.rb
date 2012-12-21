@@ -6,7 +6,7 @@ describe Spree::Tenant do
     tenant.valid?
     tenant.errors.should include(attribute_name)
 
-    tenant.send("#{attribute_name}=", attribute_name)
+    tenant.send("#{attribute_name}=", attribute_name.to_s)
     tenant.valid?
     tenant.errors.should_not include(attribute_name)
   end
@@ -25,11 +25,18 @@ describe Spree::Tenant do
   end
 
   describe '#name' do
-    it 'defaults to same value as shortname if missing' do
+    it 'defaults to humanized version of shortname if missing' do
       tenant = Spree::Tenant.new
       tenant.shortname = 'testname'
       tenant.valid?
-      tenant.name.should == 'testname'
+      tenant.name.should == 'Testname'
+    end
+
+    it 'correctly handles a shortname with a dash' do
+      tenant = Spree::Tenant.new
+      tenant.shortname = 'test-name'
+      tenant.valid?
+      tenant.name.should == 'Test Name'
     end
   end
 

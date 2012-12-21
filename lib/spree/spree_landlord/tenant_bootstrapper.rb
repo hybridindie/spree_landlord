@@ -1,24 +1,39 @@
 module Spree
   module SpreeLandlord
     class TenantBootstrapper
+      attr_reader :first_tenant
+
       def run
         create_first_tenant
         create_tenants_admin_role
+        notify
       end
 
       def create_first_tenant
-        tenant = Spree::Tenant.new
-        tenant.domain = "#{Rails.application.class.parent_name.tableize.singularize}.dev"
-        tenant.shortname = "#{Rails.application.class.parent_name}"
-        tenant.save!
+        @first_tenant = Spree::Tenant.new
+        @first_tenant.domain = "#{dns_friendly_app_name}.dev"
+        @first_tenant.shortname = dns_friendly_app_name
+        @first_tenant.save!
+        @first_tenant
       end
 
       def create_tenants_admin_role
-        Spree::Role.create!(name: 'spree_admin')
+        role = Spree::Role.new(name: 'spree_admin')
+        role.tenant = first_tenant
+        role.save!
+        role
       end
 
       def notify
-        puts("Created #{Rails.application.class.parent_name} as default Tenant")
+        puts("Created #{dns_friendly_app_name} as default Tenant")
+      end
+
+      def app_name
+        Rails.application.class.parent_name
+      end
+
+      def dns_friendly_app_name
+        app_name.tableize.singularize.dasherize
       end
     end
   end

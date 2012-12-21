@@ -53,7 +53,7 @@ module Spree
 
     def ensure_name_is_present
       if attribute_names.include?('name')
-        self.name ||= self.shortname
+        self.name ||= self.shortname.humanize.titleize if self.shortname.present?
       end
     end
   end
