@@ -8,15 +8,6 @@ class AddTennentIdToModels < ActiveRecord::Migration
       end
     end
 
-    # Create the first tenant
-    tenant = Spree::Tenant.new
-    tenant.domain = "#{Rails.application.class.parent_name.tableize.singularize}.dev"
-    tenant.shortname = "#{Rails.application.class.parent_name}"
-    tenant.save!
-
-    # Create the Tenant admin
-    Spree::Role.create!(name: 'spree_admin')
-
-    puts("Created #{Rails.application.class.parent_name} as default Tenant")
+    Spree::SpreeLandlord::TenantBootstrapper.new.run
   end
 end
