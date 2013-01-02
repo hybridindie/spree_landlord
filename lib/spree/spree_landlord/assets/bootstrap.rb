@@ -1,5 +1,7 @@
 # based on rails-3.2/actionpack/lib/sprockets/bootstrap.rb
 
+require 'pathname'
+
 module Spree
   module SpreeLandlord
     module Assets
@@ -14,6 +16,9 @@ module Spree
           return unless app.tenants_assets
 
           app.tenants_assets.each do |tenant, tenant_assets|
+            (Pathname.new(tenant_assets.root) + 'assets').children.select { |d| d.directory? }.each do |path|
+              tenant_assets.append_path(path)
+            end
             config.assets.paths.each { |path| tenant_assets.append_path(path) }
 
             if config.assets.compress

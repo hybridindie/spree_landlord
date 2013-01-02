@@ -10,8 +10,11 @@ describe 'tenant assets' do
 
   before do
     master = Spree::Tenant.master
+    master.shortname = 'example'
     master.domain = 'example.com'
     master.save!
+
+    Spree::Tenant.create!(:shortname => 'apple', :domain => 'apple.com')
   end
 
   it 'renders simple non-tenant asset' do
@@ -26,6 +29,22 @@ describe 'tenant assets' do
     css = read_test_app_fixture_file('app/tenants/apple/assets/stylesheets/test.css')
 
     get 'http://example.com/tenants/apple/assets/test.css'
+
+    response.body.should == css
+  end
+
+  it 'falls back to app asset directory from example tenant' do
+    css = read_test_app_fixture_file('app/assets/stylesheets/app.css')
+
+    get 'http://example.com/tenants/example/assets/app.css'
+
+    response.body.should == css
+  end
+
+  it 'falls back to app asset directory from apple tenant' do
+    css = read_test_app_fixture_file('app/assets/stylesheets/app.css')
+
+    get 'http://example.com/tenants/apple/assets/app.css'
 
     response.body.should == css
   end
