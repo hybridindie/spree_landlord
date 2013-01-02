@@ -3,7 +3,7 @@ require 'fileutils'
 
 describe 'tenant assets' do
   def read_test_app_fixture_file(path)
-    app_fixture_root = File.expand_path('../../support/test_app_fixtures', __FILE__)
+    app_fixture_root = File.expand_path('../../test_app_fixtures', __FILE__)
     full_path = File.join(app_fixture_root, path)
     File.read(full_path)
   end
