@@ -31,6 +31,16 @@ module Spree
           attr_accessor :tenants_assets
         end
 
+        Sprockets::Helpers::RailsHelper.class_eval do
+          def asset_prefix
+            "/tenants/#{Spree::Tenant.current_tenant.shortname}#{Rails.application.config.assets.prefix}"
+          end
+
+          def asset_environment
+            Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
+          end
+        end
+
         config = app.config
         next unless config.assets.enabled
 
@@ -64,15 +74,6 @@ module Spree
             if File.exist?(path)
               config.assets.digests = YAML.load_file(path)
             end
-
-            # TODO: write tenant specific helpers and load them here
-            # ActiveSupport.on_load(:action_view) do
-            #   include ::Sprockets::Helpers::RailsHelper
-            #   app.assets.context_class.instance_eval do
-            #     include ::Sprockets::Helpers::IsolatedHelper
-            #     include ::Sprockets::Helpers::RailsHelper
-            #   end
-            # end
           end
         end
       end

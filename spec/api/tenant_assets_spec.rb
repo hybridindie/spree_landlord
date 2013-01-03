@@ -48,4 +48,104 @@ describe 'tenant assets' do
 
     response.body.should == css
   end
+
+  describe 'helper methods' do
+    describe '#javascript_include_tag' do
+      it 'generates include tag with path to master tenant javascript' do
+        get 'http://example.com/views/javascript_include_tag_fixture'
+
+        response.body.should include(%q{javascript_include_tag('test.js'): <script src="/tenants/example/assets/test.js" type="text/javascript"></script>})
+      end
+
+      it 'generates include tag with path to apple tenant javascript' do
+        get 'http://apple.com/views/javascript_include_tag_fixture'
+
+        response.body.should include(%q{javascript_include_tag('test.js'): <script src="/tenants/apple/assets/test.js" type="text/javascript"></script>})
+      end
+    end
+
+    describe '#stylesheet_link_tag' do
+      it 'generates link tag with path to master tenant stylesheet' do
+        get 'http://example.com/views/stylesheet_link_tag_fixture'
+
+        response.body.should include(%q{stylesheet_link_tag('test.css'): <link href="/tenants/example/assets/test.css" media="screen" rel="stylesheet" type="text/css" />})
+      end
+
+      it 'generates link tag with path to apple tenant stylesheet' do
+        get 'http://apple.com/views/stylesheet_link_tag_fixture'
+
+        response.body.should include(%q{stylesheet_link_tag('test.css'): <link href="/tenants/apple/assets/test.css" media="screen" rel="stylesheet" type="text/css" />})
+      end
+    end
+
+    describe '#asset_path' do
+      it 'returns path to master tenant asset' do
+        get 'http://example.com/views/asset_path_fixture'
+
+        response.body.should include("asset_path('test.css'): /tenants/example/assets/test.css")
+      end
+
+      it 'returns path to apple tenant asset' do
+        get 'http://apple.com/views/asset_path_fixture'
+
+        response.body.should include("asset_path('test.css'): /tenants/apple/assets/test.css")
+      end
+    end
+
+    describe '#image_path' do
+      it 'returns path to master tenant image' do
+        get 'http://example.com/views/image_path_fixture'
+
+        response.body.should include("image_path('test.png'): /tenants/example/assets/test.png")
+      end
+
+      it 'returns path to apple tenant image' do
+        get 'http://apple.com/views/image_path_fixture'
+
+        response.body.should include("image_path('test.png'): /tenants/apple/assets/test.png")
+      end
+    end
+
+    describe '#font_path' do
+      it 'returns path to master tenant font' do
+        get 'http://example.com/views/font_path_fixture'
+
+        response.body.should include("font_path('test.ttf'): /tenants/example/assets/test.ttf")
+      end
+
+      it 'returns path to apple tenant font' do
+        get 'http://apple.com/views/font_path_fixture'
+
+        response.body.should include("font_path('test.ttf'): /tenants/apple/assets/test.ttf")
+      end
+    end
+
+    describe '#javascript_path' do
+      it 'returns path to master tenant javascript' do
+        get 'http://example.com/views/javascript_path_fixture'
+
+        response.body.should include("javascript_path('test.js'): /tenants/example/assets/test.js")
+      end
+
+      it 'returns path to apple tenant javascript' do
+        get 'http://apple.com/views/javascript_path_fixture'
+
+        response.body.should include("javascript_path('test.js'): /tenants/apple/assets/test.js")
+      end
+    end
+
+    describe '#stylesheet_path' do
+      it 'returns path to master tenant stylesheet' do
+        get 'http://example.com/views/stylesheet_path_fixture'
+
+        response.body.should include("stylesheet_path('test.css'): /tenants/example/assets/test.css")
+      end
+
+      it 'returns path to apple tenant stlyesheet' do
+        get 'http://apple.com/views/stylesheet_path_fixture'
+
+        response.body.should include("stylesheet_path('test.css'): /tenants/apple/assets/test.css")
+      end
+    end
+  end
 end
