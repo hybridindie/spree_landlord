@@ -6,6 +6,7 @@ module Spree
       engine_name 'spree_landlord'
 
       config.autoload_paths += %W(#{config.root}/lib)
+      config.current_tenant_name = ENV['TENANT_NAME']
 
       # use rspec for tests
       config.generators do |g|
@@ -33,11 +34,23 @@ module Spree
 
         Sprockets::Helpers::RailsHelper.class_eval do
           def asset_prefix
-            "/tenants/#{Spree::Tenant.current_tenant.shortname}#{Rails.application.config.assets.prefix}"
+            if Spree::Tenant.current_tenant_id
+              "/tenants/#{Spree::Tenant.current_tenant.shortname}#{Rails.application.config.assets.prefix}"
+            elsif Rails.application.config.current_tenant_name
+              "/tenants/#{Rails.application.config.current_tenant_name}#{Rails.application.config.assets.prefix}"
+            else
+              Rails.application.config.assets.prefix
+            end
           end
 
           def asset_environment
-            Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
+            if Spree::Tenant.current_tenant_id
+              Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
+            elsif Rails.application.config.current_tenant_name
+              Rails.application.tenants_assets[Rails.application.config.current_tenant_name]
+            else
+              Rails.application.assets
+            end
           end
         end
 
@@ -53,7 +66,7 @@ module Spree
             require 'sprockets'
 
             app.tenants_assets ||= {}
-            app.tenants_assets[tenant_name] = Sprockets::Environment.new(tenant_root.to_s) do |env|
+            app.tenants_assets[tenant_name.to_s] = Sprockets::Environment.new(app.root.to_s) do |env|
               env.version = ::Rails.env + "-#{config.assets.version}"
 
               if config.assets.logger != false
@@ -74,6 +87,17 @@ module Spree
             if File.exist?(path)
               config.assets.digests = YAML.load_file(path)
             end
+
+            ActiveSupport.on_load(:action_view) do
+              include ::Sprockets::Helpers::RailsHelper
+              app.tenants_assets[tenant_name.to_s].context_class.instance_eval do
+                include ::Sprockets::Helpers::IsolatedHelper
+                include ::Sprockets::Helpers::RailsHelper
+              end
+            end
+
+            app.tenants_assets[tenant_name.to_s].context_class.extend(::Sass::Rails::Railtie::SassContext)
+            app.tenants_assets[tenant_name.to_s].context_class.sass_config = app.config.sass
           end
         end
       end
