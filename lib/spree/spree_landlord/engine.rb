@@ -34,7 +34,7 @@ module Spree
 
         Sprockets::Helpers::RailsHelper.class_eval do
           def asset_prefix
-            if Spree::Tenant.current_tenant_id
+            if Spree::Tenant.current_tenant_id && Rails.application.tenants_assets && Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
               "/tenants/#{Spree::Tenant.current_tenant.shortname}#{Rails.application.config.assets.prefix}"
             elsif Rails.application.config.current_tenant_name
               "/tenants/#{Rails.application.config.current_tenant_name}#{Rails.application.config.assets.prefix}"
@@ -44,7 +44,7 @@ module Spree
           end
 
           def asset_environment
-            if Spree::Tenant.current_tenant_id
+            if Spree::Tenant.current_tenant_id && Rails.application.tenants_assets && Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
               Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
             elsif Rails.application.config.current_tenant_name
               Rails.application.tenants_assets[Rails.application.config.current_tenant_name]
