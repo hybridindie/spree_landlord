@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'open3'
 
 describe 'bootstrap' do
   describe 'a spree site with landlord installed' do
