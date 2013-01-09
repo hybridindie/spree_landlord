@@ -28,7 +28,7 @@ namespace :spree_landlord do
 end
 
 namespace :db do
-  task :load_file do
+  task :load_file => :reset_column_information do
     Spree::SpreeLandlord::TenantMigrator.new.move_unassigned_to_master
   end
 
@@ -36,6 +36,7 @@ namespace :db do
 
   task :reset_column_information do
     ActiveRecord::Base.send(:subclasses).each do |model|
+      model.connection.schema_cache.clear!
       model.reset_column_information
     end
   end
