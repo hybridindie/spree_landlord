@@ -14,4 +14,14 @@ Spree::User.class_eval do
     end
   }
 
+  before_save :ensure_super_admin_is_admin
+
+  protected
+
+  def ensure_super_admin_is_admin
+    if self.super_admin?
+      admin_role = Spree::Role.find_or_create_by_name 'admin'
+      self.spree_roles << admin_role
+    end
+  end
 end

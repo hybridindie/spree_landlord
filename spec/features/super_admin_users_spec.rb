@@ -42,7 +42,26 @@ describe 'super admin users' do
     page.should have_content("Logged In As: #{super_admin.email}")
   end
 
-  it 'can create super admin users'
+  it 'can create super admin users' do
+    visit 'http://apples.example.com/admin/users/new'
+
+    fill_in 'Email', :with => super_admin.email
+    fill_in 'Password', :with => super_admin.password
+    click_button 'Login'
+
+    fill_in 'Email', :with => 'user@example.com'
+    fill_in 'Password', :with => 'spree123'
+    fill_in 'Password Confirmation', :with => 'spree123'
+    check 'user_super_admin'
+    click_button 'Create'
+
+    page.should have_content('Listing Users')
+    page.should have_content('user@example.com')
+
+    user = Spree::User.find_by_email('user@example.com')
+    user.should have_spree_role(:admin)
+    user.should be_super_admin
+  end
 
   it 'can create admin users' do
     visit 'http://apples.example.com/admin/users/new'

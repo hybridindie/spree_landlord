@@ -39,7 +39,21 @@ describe 'normal admin users' do
     page.should_not have_content("Logged In As: #{apples_admin.email}")
   end
 
-  it 'cannot change the super admin status of another user'
+  it 'cannot create a super admin' do
+    visit 'http://apples.example.com/admin/users/new'
+
+    fill_in 'Email', :with => apples_admin.email
+    fill_in 'Password', :with => apples_admin.password
+    click_button 'Login'
+
+    fill_in 'Email', :with => 'user@example.com'
+    fill_in 'Password', :with => 'spree123'
+    fill_in 'Password Confirmation', :with => 'spree123'
+
+    page.should have_no_field('user_super_admin')
+  end
+
+  it 'cannot modify a super admin'
 
   it 'can create admin users' do
     visit 'http://apples.example.com/admin/users/new'
