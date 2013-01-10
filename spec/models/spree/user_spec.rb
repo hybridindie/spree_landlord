@@ -23,4 +23,7 @@ describe Spree::User do
       Spree::User.create!(email: 'test@example.com', password: 'spree123')
     }.to raise_error('Validation failed: Email has already been taken')
   end
+
+  it 'creates first user as a super admin'
+  it 'creates second user as neither super nor admin'
 end

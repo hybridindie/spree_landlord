@@ -6,4 +6,12 @@ Spree::User.class_eval do
   end
 
   validates :email, :uniqueness => { :scope => :tenant_id, :allow_blank => true, :if => :email_changed? }
+
+  self.default_scopes = []
+  default_scope lambda {
+    if Spree::Tenant.table_exists? && column_names.include?('tenant_id') && column_names.include?('super_admin')
+      where( "#{table_name}.tenant_id = ? or #{table_name}.super_admin = ?", Spree::Tenant.current_tenant_id, true )
+    end
+  }
+
 end
