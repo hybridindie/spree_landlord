@@ -1,16 +1,39 @@
 require 'spec_helper'
 
 describe 'preferences' do
-  extend AuthorizationHelpers::Request
-  stub_authorization!
+  let!(:alpha_tenant) { FactoryGirl.create(:tenant, shortname: 'alpha') }
+  let!(:beta_tenant) { FactoryGirl.create(:tenant, shortname: 'beta') }
 
-  let!(:alpha_tenant) { FactoryGirl.create(:tenant, :shortname => 'alpha') }
-  let!(:beta_tenant) { FactoryGirl.create(:tenant, :shortname => 'beta') }
+  let!(:super_admin) {
+    Spree::User.create!(email: 'super@example.com', password: 'spree123')
+  }
+
+  let(:alpha_admin) {
+    Spree::Tenant.set_current_tenant alpha_tenant
+    Spree::User.create!(email: 'alpha@example.com', password: 'spree123').tap do |u|
+      u.spree_roles << Spree::Role.find_or_create_by_name(:admin)
+      u.tenant = alpha_tenant
+      u.save!
+    end
+  }
+  let(:beta_admin) {
+    Spree::Tenant.set_current_tenant beta_tenant
+    Spree::User.create!(email: 'beta@example.com', password: 'spree123').tap do |u|
+      u.spree_roles << Spree::Role.find_or_create_by_name(:admin)
+      u.tenant = beta_tenant
+      u.save!
+    end
+  }
 
   it 'preferences that are set through the admin ui respect tenancy' do
     Rails.cache.clear
 
     visit 'http://alpha.sample.com/admin'
+
+    fill_in 'Email', :with => alpha_admin.email
+    fill_in 'Password', :with => alpha_admin.password
+    click_button 'Login'
+
     click_link "Configuration"
     click_link "General Settings"
 
@@ -23,6 +46,11 @@ describe 'preferences' do
     find("#site_name").value.should == "Spree Demo Alpha"
 
     visit 'http://beta.sample.com/admin'
+
+    fill_in 'Email', :with => beta_admin.email
+    fill_in 'Password', :with => beta_admin.password
+    click_button 'Login'
+
     click_link "Configuration"
     click_link "General Settings"
 
@@ -35,12 +63,22 @@ describe 'preferences' do
     find("#site_name").value.should == "Spree Demo Beta"
 
     visit 'http://alpha.sample.com/admin'
+
+    fill_in 'Email', :with => alpha_admin.email
+    fill_in 'Password', :with => alpha_admin.password
+    click_button 'Login'
+
     click_link "Configuration"
     click_link "General Settings"
 
     find("#site_name").value.should == "Spree Demo Alpha"
 
     visit 'http://beta.sample.com/admin'
+
+    fill_in 'Email', :with => beta_admin.email
+    fill_in 'Password', :with => beta_admin.password
+    click_button 'Login'
+
     click_link "Configuration"
     click_link "General Settings"
 
