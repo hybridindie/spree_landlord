@@ -68,7 +68,7 @@ describe 'tenant assets' do
       end
 
       it 'searches for file from included gem' do
-        get 'http://example.com/tenants/apple/assets/require_html5reset.css'
+        get 'http://example.com/tenants/apple/assets/require_normalize.css'
 
         response.body.should_not include('Error compiling CSS asset')
       end
