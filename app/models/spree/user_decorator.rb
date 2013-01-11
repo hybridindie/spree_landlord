@@ -6,4 +6,33 @@ Spree::User.class_eval do
   end
 
   validates :email, :uniqueness => { :scope => :tenant_id, :allow_blank => true, :if => :email_changed? }
+
+  self.default_scopes = []
+  default_scope lambda {
+    if Spree::Tenant.table_exists? && column_names.include?('tenant_id') && column_names.include?('super_admin')
+      where( "#{table_name}.tenant_id = ? or #{table_name}.super_admin = ?", Spree::Tenant.current_tenant_id, true )
+    end
+  }
+
+  before_save :ensure_at_least_one_super_admin_exists
+  before_save :ensure_super_admin_is_admin
+
+  protected
+
+  def super_admin_exists?
+    Spree::User.where(:super_admin => true).count > 0
+  end
+
+  def ensure_at_least_one_super_admin_exists
+    unless super_admin_exists?
+      self.super_admin = true
+    end
+  end
+
+  def ensure_super_admin_is_admin
+    if self.super_admin?
+      admin_role = Spree::Role.find_or_create_by_name 'admin'
+      self.spree_roles << admin_role
+    end
+  end
 end
