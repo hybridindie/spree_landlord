@@ -3,16 +3,23 @@ require 'spec_helper'
 describe 'preferences' do
   let!(:alpha_tenant) { FactoryGirl.create(:tenant, shortname: 'alpha') }
   let!(:beta_tenant) { FactoryGirl.create(:tenant, shortname: 'beta') }
+
+  let!(:super_admin) {
+    Spree::User.create!(email: 'super@example.com', password: 'spree123')
+  }
+
   let(:alpha_admin) {
-    Spree::User.create!(email: 'admin@example.com', password: 'spree123').tap do |u|
-      u.spree_roles << Spree::Role.find_by_name(:admin)
+    Spree::Tenant.set_current_tenant alpha_tenant
+    Spree::User.create!(email: 'alpha@example.com', password: 'spree123').tap do |u|
+      u.spree_roles << Spree::Role.find_or_create_by_name(:admin)
       u.tenant = alpha_tenant
       u.save!
     end
   }
   let(:beta_admin) {
-    Spree::User.create!(email: 'admin@example.com', password: 'spree123').tap do |u|
-      u.spree_roles << Spree::Role.find_by_name(:admin)
+    Spree::Tenant.set_current_tenant beta_tenant
+    Spree::User.create!(email: 'beta@example.com', password: 'spree123').tap do |u|
+      u.spree_roles << Spree::Role.find_or_create_by_name(:admin)
       u.tenant = beta_tenant
       u.save!
     end

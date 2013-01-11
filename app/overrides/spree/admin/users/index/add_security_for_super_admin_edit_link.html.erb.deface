@@ -1,0 +1,8 @@
+<!-- replace_contents "[data-hook='admin_users_index_row_actions']" -->
+
+<% if can? :edit, user %>
+  <%= link_to_edit user, :no_text => true %>
+<% end %>
+<% if can? :delete, user %>
+  <%= link_to_delete user, :no_text => true %>
+<% end %>

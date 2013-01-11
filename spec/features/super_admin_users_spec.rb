@@ -4,11 +4,19 @@ describe 'super admin users' do
   let!(:apples_tenant) { FactoryGirl.create(:tenant, :shortname => 'apples', :domain => 'apples.com', name: "Apple") }
   let!(:oranges_tenant) { FactoryGirl.create(:tenant, :shortname => 'oranges', :domain => 'oranges.com', name: "Orange") }
 
-  let(:super_admin) {
+  let!(:super_admin) {
     Spree::User.create!(email: 'super-admin@example.com', password: 'spree123').tap do |u|
       u.tenant = apples_tenant
       u.super_admin = true
       u.spree_roles << Spree::Role.find_by_name(:admin)
+      u.save!
+    end
+  }
+
+  let!(:oranges_admin) {
+    Spree::Tenant.set_current_tenant oranges_tenant
+    Spree::User.create!(email: 'oranges@example.com', password: 'spree123').tap do |u|
+      u.spree_roles << Spree::Role.find_or_create_by_name(:admin)
       u.save!
     end
   }
@@ -107,5 +115,14 @@ describe 'super admin users' do
     user.should_not be_super_admin
   end
 
-  it 'show up the user lists of all tenant backends'
+  it 'show up the user lists of all tenant backends' do
+    visit 'http://oranges.example.com/admin/users'
+
+    fill_in 'Email', :with => oranges_admin.email
+    fill_in 'Password', :with => oranges_admin.password
+    click_button 'Login'
+
+    page.should have_link(oranges_admin.email)
+    page.should have_link(super_admin.email)
+  end
 end
