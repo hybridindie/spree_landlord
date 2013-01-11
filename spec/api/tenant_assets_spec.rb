@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'fileutils'
+require 'sass/css'
 
 describe 'tenant assets' do
   def read_test_app_fixture_file(path)
@@ -51,20 +52,29 @@ describe 'tenant assets' do
     end
 
     context 'with scss require' do
+
+      def remove_css_comments_and_new_lines(value)
+        value.gsub(/\/\*([^\*]|\*[^\/])*\*\//m, '').gsub("\n", '')
+      end
+
       it 'searches for required file in tenant tree' do
         css = read_test_app_fixture_file('app/tenants/apple/assets/stylesheets/tenant_colors.css.scss')
+        sanitized_css = remove_css_comments_and_new_lines(Sass::CSS.new(css).render(:scss))
 
         get 'http://example.com/tenants/apple/assets/require_from_tenant.css'
 
-        response.body.should == css
+        sanitized_body = remove_css_comments_and_new_lines(response.body)
+        sanitized_body.should == sanitized_css
       end
 
       it 'searches for required file in app tree' do
         css = read_test_app_fixture_file('app/assets/stylesheets/app_colors.css.scss')
+        sanitized_css = remove_css_comments_and_new_lines(Sass::CSS.new(css).render(:scss))
 
         get 'http://example.com/tenants/apple/assets/require_from_app.css'
 
-        response.body.should == css
+        sanitized_body = remove_css_comments_and_new_lines(response.body)
+        sanitized_body.should == sanitized_css
       end
 
       it 'searches for file from included gem' do
