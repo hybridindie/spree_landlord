@@ -96,8 +96,10 @@ module Spree
               end
             end
 
-            app.tenants_assets[tenant_name.to_s].context_class.extend(::Sass::Rails::Railtie::SassContext)
-            app.tenants_assets[tenant_name.to_s].context_class.sass_config = app.config.sass
+            if defined?(::Sass::Rails::Railtie::SassContext)
+              app.tenants_assets[tenant_name.to_s].context_class.extend(::Sass::Rails::Railtie::SassContext)
+              app.tenants_assets[tenant_name.to_s].context_class.sass_config = app.config.sass
+            end
           end
         end
       end
