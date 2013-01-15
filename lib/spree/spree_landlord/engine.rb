@@ -30,6 +30,7 @@ module Spree
       initializer "landlord.assets.environment", :group => :all do |app|
         Rails::Application.class_eval do
           attr_accessor :tenants_assets
+          attr_accessor :tenants_digests
         end
 
         Sprockets::Helpers::RailsHelper.class_eval do
@@ -50,6 +51,16 @@ module Spree
               Rails.application.tenants_assets[Rails.application.config.current_tenant_name]
             else
               Rails.application.assets
+            end
+          end
+
+          def asset_digests
+            if Spree::Tenant.current_tenant_id && Rails.application.tenants_assets && Rails.application.tenants_assets[Spree::Tenant.current_tenant.shortname]
+              Rails.application.tenants_digests[Spree::Tenant.current_tenant.shortname]
+            elsif Rails.application.config.current_tenant_name
+              Rails.application.tenants_digests[Rails.application.config.current_tenant_name]
+            else
+              Rails.application.config.assets.digests
             end
           end
         end
@@ -79,13 +90,14 @@ module Spree
             end
 
             if config.assets.manifest
-              path = File.join(config.assets.manifest, "manifest.yml")
+              path = File.join(config.assets.manifest, 'tenants', tenant_name, "manifest.yml")
             else
               path = File.join(Rails.public_path, 'tenants', tenant_name, config.assets.prefix, "manifest.yml")
             end
 
+            app.tenants_digests ||= {}
             if File.exist?(path)
-              config.assets.digests = YAML.load_file(path)
+              app.tenants_digests[tenant_name.to_s] = YAML.load_file(path)
             end
 
             ActiveSupport.on_load(:action_view) do
