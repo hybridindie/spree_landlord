@@ -1,3 +1,7 @@
+# move support/test_app_fixtures tree into spec/dummy
+require 'fileutils'
+FileUtils.cp_r "#{File.expand_path('../test_app_fixtures/.', __FILE__)}/.", File.expand_path('../dummy', __FILE__)
+
 # Configure Rails Environment
 ENV['RAILS_ENV'] = 'test'
 

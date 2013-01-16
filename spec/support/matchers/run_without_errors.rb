@@ -1,3 +1,5 @@
+require 'open3'
+
 RSpec::Matchers.define :run_without_errors do
   match do |shell_command|
     @output, status = Open3.capture2e(shell_command)
