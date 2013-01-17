@@ -15,6 +15,9 @@ module Spree
         ensure
           remove_tenant_asset_paths(tenant)
         end
+
+      rescue Spree::SpreeLandlord::TenantNotFound
+        super
       end
 
       def tenant_assets_paths(tenant)
