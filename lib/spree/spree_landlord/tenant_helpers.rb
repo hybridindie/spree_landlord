@@ -4,8 +4,8 @@ module Spree
       extend ActiveSupport::Concern
 
       included do
-        before_filter :set_current_tenant
-        before_filter :add_tenant_view_path
+        before_filter :set_current_tenant, if: :is_spree_tenant?
+        before_filter :add_tenant_view_path, if: :is_spree_tenant?
       end
 
       def set_current_tenant
@@ -18,6 +18,10 @@ module Spree
         tenant = Tenant.current_tenant
         path = "app/tenants/#{tenant.shortname}/views"
         prepend_view_path(path)
+      end
+
+      def is_spree_tenant?
+        true
       end
     end
   end
