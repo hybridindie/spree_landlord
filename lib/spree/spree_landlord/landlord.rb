@@ -1,7 +1,8 @@
 module Spree
   class Landlord
 
-    def self.model_names
+    mattr_accessor :model_names
+    @@model_names =
       [ Spree::Activator,
         Spree::Address,
         Spree::Adjustment,
@@ -45,6 +46,15 @@ module Spree
         Spree::Variant,
         Spree::ZoneMember,
         Spree::Zone ]
+    
+    # This is the default way to configure spree_landlord. Create an initializer in 
+    # your app and define a setup like this:
+    #
+    # Spree::SpreeLandlord.setup do |config|
+    #   yada.. yada..
+    # end
+    def self.setup
+      yield self
     end
 
   end
