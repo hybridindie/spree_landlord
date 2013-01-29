@@ -1,8 +1,8 @@
-require 'spree_core'
-require 'spree_promo'
-
 module Spree
   class Landlord
+    require 'spree_core'
+    require 'spree_promo'
+    require 'spree/core'
 
     mattr_accessor :model_names
     @@model_names =
