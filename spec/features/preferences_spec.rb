@@ -4,8 +4,8 @@ describe 'preferences' do
   extend AuthorizationHelpers::Request
   stub_authorization!
 
-  let!(:alpha_tenant) { FactoryGirl.create(:tenant, :shortname => 'alpha') }
-  let!(:beta_tenant) { FactoryGirl.create(:tenant, :shortname => 'beta') }
+  let!(:alpha_tenant) { Spree::Tenant.create!(:shortname => 'alpha', :domain => 'alpha.dev') }
+  let!(:beta_tenant) { Spree::Tenant.create!(:shortname => 'beta', :domain => 'beta.dev') }
 
   it 'preferences that are set through the admin ui respect tenancy' do
     Rails.cache.clear
