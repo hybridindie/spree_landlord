@@ -1,3 +1,9 @@
+# Repository moved to https://github.com/railsdog/spree_landlord
+
+Follow development at Landlord's new home in the Rails Dog organization.
+
+Please don't open up issues or submit pull requests to this fork.
+
 spree_landlord
 ==============
 
