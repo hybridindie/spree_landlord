@@ -8,6 +8,11 @@ class AddTennentIdToModels < ActiveRecord::Migration
       end
     end
 
+    Spree::Tenant.connection.schema_cache.clear!
+    Spree::Landlord.model_names.each do |model|
+      model.reset_column_information
+    end
+
     # Create the first tenant
     tenant = Spree::Tenant.new
     tenant.domain = "#{Rails.application.class.parent_name.tableize.singularize}.dev"
